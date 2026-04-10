@@ -1,23 +1,22 @@
-/* STUDENT 2: Refactored for OCP
-   Violation: main() had long if-else for Teacher, Tutor, Student levels.
-   Refactor: Used Strategy Pattern / Polymorphism.
+/* STUDENT 3: Refactored for LSP
+   Violation: If Teacher and Student inherit from People, 
+              but Student is forced to have 'giveGrades()' which they can't do.
+   Refactor: Ensure base class only has common behaviors.
 */
 
-class UserMenuStrategy {
+class People {
 public:
-    virtual void showMenu(int id) = 0; // Interface for extension
-    virtual ~UserMenuStrategy() {}
+    virtual string getRole() = 0;
+    string getName() { return name; }
+private:
+    string name;
 };
 
-class StudentMenu : public UserMenuStrategy {
-public:
-    void showMenu(int id) override { /* Student specific logic */ }
+// Subclasses can replace People without breaking the system
+class Student : public People {
+    string getRole() override { return "Student"; }
 };
 
-class TeacherMenu : public UserMenuStrategy {
-public:
-    void showMenu(int id) override { /* Teacher specific logic */ }
+class Teacher : public People {
+    string getRole() override { return "Teacher"; }
 };
-
-// Now if a new "Admin" type comes, we just add a new class, 
-// no need to change main() if-else blocks.
