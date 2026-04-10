@@ -1,28 +1,23 @@
-/* STUDENT 1: Refactored for SRP
-   Violation: Original init() was doing UI, Input, and Login logic.
-   Refactor: Created separate classes for UI and Authentication.
+/* STUDENT 2: Refactored for OCP
+   Violation: main() had long if-else for Teacher, Tutor, Student levels.
+   Refactor: Used Strategy Pattern / Polymorphism.
 */
 
-class ConsoleUI {
+class UserMenuStrategy {
 public:
-    void displayMainMenu() {
-        cout << "|====== STUDENT DATABASE MANAGEMENT SYSTEM ======| \n";
-        cout << "|  1. Login | 2. Show Info | 3. Exit | \n";
-    }
-    
-    void displayTeacherMenu() {
-        // Only responsible for printing the menu
-        cout << "1. Show Students\n2. Add Student... (etc)\n";
-    }
+    virtual void showMenu(int id) = 0; // Interface for extension
+    virtual ~UserMenuStrategy() {}
 };
 
-class AuthenticationService {
+class StudentMenu : public UserMenuStrategy {
 public:
-    // Only responsible for the logic of logging in
-    int login(int id, string password) {
-        if (PeopleServices::login(id, password)) {
-            return id;
-        }
-        return -1;
-    }
+    void showMenu(int id) override { /* Student specific logic */ }
 };
+
+class TeacherMenu : public UserMenuStrategy {
+public:
+    void showMenu(int id) override { /* Teacher specific logic */ }
+};
+
+// Now if a new "Admin" type comes, we just add a new class, 
+// no need to change main() if-else blocks.
