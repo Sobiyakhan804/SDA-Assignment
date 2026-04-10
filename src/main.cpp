@@ -1,22 +1,26 @@
-/* STUDENT 3: Refactored for LSP
-   Violation: If Teacher and Student inherit from People, 
-              but Student is forced to have 'giveGrades()' which they can't do.
-   Refactor: Ensure base class only has common behaviors.
+/* STUDENT 4: Refactored for ISP
+   Violation: A giant 'Service' interface forcing everyone to implement 
+              AddSubject, AddTutor, and ViewGrades.
+   Refactor: Split into smaller interfaces.
 */
 
-class People {
+class ISubjectViewer {
 public:
-    virtual string getRole() = 0;
-    string getName() { return name; }
-private:
-    string name;
+    virtual void viewSubjects() = 0;
 };
 
-// Subclasses can replace People without breaking the system
-class Student : public People {
-    string getRole() override { return "Student"; }
+class ISubjectManager {
+public:
+    virtual void addSubject(string name) = 0;
 };
 
-class Teacher : public People {
-    string getRole() override { return "Teacher"; }
+// Student only implements what they need
+class StudentUser : public ISubjectViewer {
+    void viewSubjects() override { /* ... */ }
+};
+
+// Teacher implements both
+class TeacherUser : public ISubjectViewer, public ISubjectManager {
+    void viewSubjects() override { /* ... */ }
+    void addSubject(string name) override { /* ... */ }
 };
