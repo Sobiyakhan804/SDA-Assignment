@@ -1,26 +1,27 @@
-/* STUDENT 4: Refactored for ISP
-   Violation: A giant 'Service' interface forcing everyone to implement 
-              AddSubject, AddTutor, and ViewGrades.
-   Refactor: Split into smaller interfaces.
+/* STUDENT 5: Refactored for DIP
+   Violation: Services were directly creating 'PeopleDao' objects (Hard Dependency).
+   Refactor: Dependency Injection using Interfaces.
 */
 
-class ISubjectViewer {
+// Abstraction
+class IPeopleRepository {
 public:
-    virtual void viewSubjects() = 0;
+    virtual People* findById(int id) = 0;
 };
 
-class ISubjectManager {
+// Low-level Detail
+class PeopleDao : public IPeopleRepository {
 public:
-    virtual void addSubject(string name) = 0;
+    People* findById(int id) override { /* Database logic */ return nullptr; }
 };
 
-// Student only implements what they need
-class StudentUser : public ISubjectViewer {
-    void viewSubjects() override { /* ... */ }
-};
-
-// Teacher implements both
-class TeacherUser : public ISubjectViewer, public ISubjectManager {
-    void viewSubjects() override { /* ... */ }
-    void addSubject(string name) override { /* ... */ }
+// High-level Service depends on Interface, not Dao
+class TeacherServices {
+    IPeopleRepository* repo;
+public:
+    TeacherServices(IPeopleRepository* r) : repo(r) {} // Injected via constructor
+    
+    void showStudents() {
+        repo->findById(1); // Works with any repository implementation
+    }
 };
