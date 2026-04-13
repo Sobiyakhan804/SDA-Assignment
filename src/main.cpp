@@ -1,17 +1,23 @@
-/* STUDENT 5: Refactored for DIP
-   Violation: Services were directly creating 'PeopleDao' objects (Hard Dependency).
-   Refactor: Dependency Injection using Interfaces.
+/* STUDENT 2: Refactored for OCP
+   Violation: main() had long if-else for Teacher, Tutor, Student levels.
+   Refactor: Used Strategy Pattern / Polymorphism.
 */
-class IAuthRepository {
+
+class UserMenuStrategy {
 public:
-    virtual bool validate(int id, string pass) = 0;
+    virtual void showMenu(int id) = 0; // Interface for extension
+    virtual ~UserMenuStrategy() {}
 };
-class MySQLAuthRepository : public IAuthRepository {
+
+class StudentMenu : public UserMenuStrategy {
 public:
-    bool validate(int id, string pass) override {
-        return (id == 60032 && pass == "admin123");
-    }
+    void showMenu(int id) override { /* Student specific logic */ }
 };
-class SessionManager {
-    IAuthRepository& authRepo;
+
+class TeacherMenu : public UserMenuStrategy {
+public:
+    void showMenu(int id) override { /* Teacher specific logic */ }
 };
+
+// Now if a new "Admin" type comes, we just add a new class, 
+// no need to change main() if-else blocks.
